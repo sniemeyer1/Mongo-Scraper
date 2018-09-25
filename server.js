@@ -2,7 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
 var exphbs  = require('express-handlebars');
-//var mongoose = require("mongoose");
+// var mongoose = require("mongoose");
 // var axios = require("axios");
 // var cheerio = require("cheerio");
 
@@ -13,6 +13,7 @@ var PORT = 3000;
 
 var app = express();
 
+app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
@@ -24,10 +25,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 //setting static path
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.get('/', function (req, res) {
-  res.send('Hellooo World')
+  res.render('index');
 }); 
  
 app.listen(PORT, function(){
