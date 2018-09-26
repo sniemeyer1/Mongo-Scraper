@@ -15,15 +15,29 @@ request('https://vice.com/en_us/topic/news', (error, response, html) => {
     //console.log(html);
     const $ = cheerio.load(html);
     
-    $('.grid__wrapper__card').each((i, element) => {
-      let newArticle = ({
-        url: $(element).attr('href'),
-        headline: $(element).find('h2').text().trim(),
-        summary : $(element).find('div.grid__wrapper__card__text__summary').text().trim(),
-      });
-        console.log(newArticle);
-      });        
-  }
+//     $('.grid__wrapper__card').each((i, el) => {
+//       let newArticle = ({
+//         url: $(el).attr('href'),
+//         headline: $(el).find('h2').text().trim(),
+//         summary : $(el).find('div.grid__wrapper__card__text__summary').text().trim(),
+//       });
+//         console.log(newArticle);
+//       });        
+//   }
+// });
+
+      $('.grid__wrapper__card').each((i, el) => {
+        const headline = $(el).find('h2').text().replace(/\s\s+g/, '');
+        const summary = $(el).find('div.grid__wrapper__card__text__summary').text();
+        const url = $(el).attr('href');
+        console.log('----');
+        console.log(headline);
+        console.log(summary);
+        console.log(url);
+        console.log('----');
+        });
+         
+}
 });
 
 var PORT = 3000;
@@ -56,7 +70,7 @@ db.on('error', function(err){
  console.log(err);
 });
 
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '/views'));
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
@@ -69,65 +83,26 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 //setting static path
-//app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '/public')));
 
 //home route
-app.get('/', function (req, res) {
-  Article.find({}, function(err, articles){
-    if(err){
-      console.log(err)
-    }
-    res.render('index', {
-      headline: 'Articles',
-      summary: '',
-      url: ""
-    });
-});
+// app.get('/', function (req, res) {
+//   Article.find({}, function(err, articles){
+//     if(err){
+//       console.log(err)
+//     }
+//     res.render('index', {
+//       headline: 'Articles',
+//       summary: '',
+//       url: ""
+//     });
+// });
 
 //add route
-// app.get('/', function (req, res) {
-//   res.render('index', {
-//     content: "this is some content",
-//     published: false,
-//     people: people
-//   });
-// }); 
+app.get('/', function (req, res) {
+  res.render('index');
+}); 
 
-
-// app.get("/scrape", function(req, res) {
-//   // First, we grab the body of the html with request
-//   axios.get("https://www.vice.com/en_us/topic/news").then(function(response) {
-//     // Then, we load that into cheerio and save it to $ for a shorthand selector
-//     var $ = cheerio.load(response.data);
-
-//     // Now, we grab every h2 within an article tag, and do the following:
-//     $("article h2").each(function(i, element) {
-//       // Save an empty result object
-//       var result = {};
-
-//       // Add the text and href of every link, and save them as properties of the result object
-//       result.title = $(this)
-//         .children("a")
-//         .text();
-//       result.link = $(this)
-//         .children("a")
-//         .attr("href");
-
-//       // Create a new Article using the `result` object built from scraping
-//       db.Article.create(result)
-//         .then(function(dbArticle) {
-//           // View the added result in the console
-//           console.log(dbArticle);
-//         })
-//         .catch(function(err) {
-//           // If an error occurred, send it to the client
-//           return res.json(err);
-//         });
-//     })
-
- 
 app.listen(PORT, function() {
   console.log("App running on port " + PORT + "!");
 });
-
-})

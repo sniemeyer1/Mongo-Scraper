@@ -1,10 +1,29 @@
-<h1>Welcome</h1>
-{{#if published}}
-{{content}}
-{{/if}}
+<nav class="navbar navbar-expand-lg">
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <a class="btn btn-warning" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+        <a class="btn btn-warning" href="#">Saved Articles</a>
+         </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <a class="btn btn-warning" href="#">Scrape New Articles</a>
+      <a class="btn btn-warning" href="#">Clear Articles</a>
+    </form>
+  </div>
+</nav>   
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">NEWS SCRAPER</h1>
+        <p class="lead">VICE NEWS EDITION</p>
+    </div>
+</div>
 
-<ul>
-{{#each people}}
-    <li>{{this.lastName}} {{this.firstName}}</li>
-{{/each}}
-</ul>
+<div class="card">
+    <h5 class="card-header">Headline<a href="#" class="btn btn-primary mr-auto">Go somewhere</a></h5>
+    <div class="card-body">
+        <p class="card-text">Some supporting information.</p>
+    </div>
+</div>
