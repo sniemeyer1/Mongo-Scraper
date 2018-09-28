@@ -36,7 +36,7 @@ $(document).ready(function(){
             "<div class='card article-container'>",
             "<h5 class='card-header'>",
             article.headline,
-            "<a class='btn btn-save btn-warning ml-auto'>",
+            "<a class='btn btn-save save btn-warning ml-auto'>",
             "Save Article",
             "</a>",
             "</h5>",

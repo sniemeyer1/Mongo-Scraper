@@ -4,12 +4,15 @@ var path = require('path');
 var exphbs  = require('express-handlebars');
 var mongoose = require('mongoose');
 
+//var db = require('./models');
 
-var db = require('./models');
-
-var PORT = 3000;
+var PORT = process.env.PORT || 3000;
 
 var app = express();
+
+var router = express.Router();
+
+require("./config/routes")(router);
 
 app.use(express.static(path.join(__dirname, '/public')));
 
@@ -33,6 +36,8 @@ mongodb.on('error', function(err){
 app.set('views', path.join(__dirname, '/views'));
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
+
+app.use(router);
 
 app.listen(PORT, function() {
   console.log("App running on port " + PORT + "!");
@@ -97,20 +102,7 @@ app.get("/articles", function(req, res) {
       res.json(err);
     });
 });
-//home route
-// app.get('/', function (req, res) {
-//   Article.find({}, function(err, articles){
-//     if(err){
-//       console.log(err)
-//     }
-//     res.render('index', {
-//       headline: 'Articles',
-//       summary: '',
-//       url: ""
-//     });
-// });
 
-//add route
 app.get('/', function (req, res) {
   res.render('index');
 }); 

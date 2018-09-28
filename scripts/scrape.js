@@ -6,7 +6,7 @@ var scrape = function(cb) {
     request('https://vice.com/en_us/topic/news', (err, res, html) => {
         const $ = cheerio.load(html);
         //empty array
-        var result = [];
+        var articles = [];
         
         $('.grid__wrapper__card').each((i, el) => {
             //grab text and cut off white space
@@ -30,10 +30,10 @@ var scrape = function(cb) {
                     link: linkNeat
                 };
 
-                result.push(dataToAdd);
+                articles.push(dataToAdd);
             }
         });
-        cb(response);
+        cb(articles);
     });
 };
 
