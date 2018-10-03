@@ -1,37 +1,52 @@
+
+// Bring in scrape script & makeDate scripts
 var scrape = require("../scripts/scrape");
 var makeDate = require("../scripts/date");
 
-var mongoHeadlines = require("../models/Headline");
-//make Headlines controller
+// Bring in the Headline & Note mongoose models
+var Headline = require("../models/Headline");
 
-//all functionality for deleting and saving to export to rest of app
 module.exports = {
-    //grabs all articles and inserts into mongodb
-    fetch: function(cb) {
-        scrape(function(data){
-            var articles = data;
-            for (var i=0; i<articles.length; i++) {
-                articles[i].date = makeDate();
-                articles[i].saved = false;
-            }
-            //mongo function to insert articles
-            mongoHeadlines.collection.insertMany(articles, {ordered:false}, function(err,docs){
-                cb(err.docs);
-            });
-        });
-    },
-    delete: function(query, cb){
-        mongoHeadlines.remove(query, cb);
-    },
-    get: function(query, cb) {
-        mongoHeadlines.find(query)
-        .sort({_id:-1})
-        .exec(function(err, doc) {
-            cb(doc);
-        });
-    },
-    update: function(query, cb) {
-        mongoHeadlines.update({_id: query._id}, {
-            $set: query}, {}, cb);
-    }
-}
+    
+  fetch: function(cb) {
+    // Run scrape function
+    scrape(function(data) {
+      // Here data is an array of article objects with headlines & summaries and setting this to articles for clarity
+      var articles = data;
+      // Make sure each article object has a date and is not saved by default
+      for (var i = 0; i < articles.length; i++) {
+        articles[i].date = makeDate();
+        articles[i].saved = false;
+      }
+      // Headline.collection allows access to the native Mongo insertMany method. Where can specify whether that this is
+      // an unordered insert (which has the benefit of being faster, & errors are logged instead of thrown, meaning that 
+      // if some inserts fail, the rest will continue).
+      // An insert is expected to fail whenever there is a duplicate headline as that property is marked unique on the 
+      // mongoose model
+      Headline.collection.insertMany(articles, { ordered: false }, function(err, docs) {
+        cb(err, docs);
+      });
+    });
+  },
+  delete: function(query, cb) {
+    Headline.remove(query, cb);
+  },
+  get: function(query, cb) {
+    // Prepare a query to get the data scraped, and sort starting from most recent (sorted by id num)
+    Headline.find(query)
+      .sort({
+        _id: -1
+      })
+      // Execute this query
+      .exec(function(err, doc) {
+        // Once finished, pass the list into the callback function
+        cb(doc);
+      });
+  },
+  update: function(query, cb) {
+    // Update the headline with the id supplied and set it to be equal to any new values passed in on query
+    Headline.update({ _id: query._id }, {
+      $set: query
+    }, {}, cb);
+  }
+};

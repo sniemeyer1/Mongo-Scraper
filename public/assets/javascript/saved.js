@@ -43,6 +43,7 @@ $(document).ready(function(){
             article.summary,
             "</p>",
             "</div>",
+            "<div>","<p>",article.date,"</p>","</div>"
             "</div>"
         ].join(""));
     panel.data("_id", article._id);
