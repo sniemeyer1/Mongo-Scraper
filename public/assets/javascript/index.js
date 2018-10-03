@@ -1,5 +1,5 @@
 $(document).on("click", ".btn-save", function() {
-  $(this).addClass("disabled");
+  //$(this).addClass("disabled");
   var thisId = $(this).attr("data-id");
   console.log(thisId);
 
@@ -61,7 +61,7 @@ $(document).ready(function() {
         "<div class='card-body'>",
         "<div class='card-title'>",
         "<h6>",
-        "<a href='" + article.url + "'>",
+        "<a href='" + article.link + "'>",
         article.headline,
         "</a>",
         "<a class='btn btn-sm btn-warning btn-save'>",
@@ -109,7 +109,7 @@ $(document).ready(function() {
   function handleArticleSave() {
     // function triggered when user wants to save an article
     // retrieve the article that was rendered initially via the createPanel function
-    var articleToSave = $(".card").data();
+    var articleToSave = $(".card-title, .card-body").data();
     articleToSave.saved = true;
     // Using a put method (to be semantic) as this is an update to an existing record in collection
     $.ajax({

@@ -1,39 +1,10 @@
-// $(document).on("click", ".btn-note", function() {
-  
-//     $(".modal-title").empty();
-//     $(".input").empty();
-  
-//     // Save the id from .btn-note
-//     var thisId = $(this).attr("data-id");
-  
-//     $.ajax({
-//       method: "GET",
-//       url: "/articles/" + thisId
-//     })
-//       // With that done, add the note information to the page
-//       .done(function(data) {
-//         console.log(data);
-  
-//         $(".modal-title").append("<h5>" + data.title + "</h5>");
-//         $(".input").append("<textarea id='bodyinput' name='body'></textarea>");
-//         $(".input").append("<button data-id='" + data._id + "' id='savenote' class='btn btn-primary btn-sm' style='margin-top:20px;'data-dismiss='modal'>Save Note</button>");
-  
-//         // If there's a note in the article
-//         if (data.note) {
-//           // Place the body of the note in the body textarea
-//           $("#bodyinput").val(data.note.body);
-//         }
-//       });
-//   });
-  
-
 $(document).ready(function(){
     var articleContainer = $(".article-container");
 
     $(document).on("click", ".btn.delete", handleArticleDelete);
     $(document).on("click", ".btn-note", handleArticleNotes);
     $(document).on("click", ".btn-save", handleNoteSave);
-    $(document).on("click", ".btn.note-delete", handleNoteDelete);
+    $(document).on("click", ".btn-delete", handleNoteDelete);
 
     initPage();
 
@@ -64,12 +35,12 @@ $(document).ready(function(){
                 "<div class='card-body'>",
                 "<div class='card-title'>",
                 "<h6>",
-                "<a href='" + article.url + "'>",
+                "<a href='" + article.link + "'>",
                 article.headline,
                 "</a>",
-                "<a class='btn btn-sm btn-warning btn-note'>",
+                "<button type='button' class='btn btn-sm btn-warning btn-note' data-toggle='modal' data-target='#myModal'>", 
                 "Add Note",
-                "</a>",
+                "</button>",
                 "</h6>",
                 "</div>",
                 "<div class='card-text'>","<p>",
@@ -96,7 +67,7 @@ $(document).ready(function(){
         articleContainer.append(emptyAlert);
     }
     function renderNotesList(data){
-        var notesToRender = [];
+        var notesToRender = {};
         var currentNote;
         if(!data.notes.length){
             currentNote = [
@@ -122,7 +93,7 @@ $(document).ready(function(){
     }
 
     function handleArticleDelete() {
-        var articleToDelete = $(this).parents(".card").data();
+        var articleToDelete = $(this).children(".card").data();
         articleToSave.saved = true;
 
         $.ajax({
@@ -135,13 +106,13 @@ $(document).ready(function(){
             }
         });
         
-    }ßç
+    }
     
     function handleArticleNotes() {
-        var currentArticle = $(".card").data();
+        var currentArticle = $(this).attr("_id").data();
         $.get("/api/notes/" + currentArticle._id).then(function(data){
             var modalText = [
-                "<div class='container-fluid'>",
+                "<div class='container-fluid text-center'>",
                 "<h3>Article Notes: ",
                 currentArticle._id,
                 "</h3>",
@@ -149,7 +120,7 @@ $(document).ready(function(){
                 "<ul class='list-group note-container'>",
                 "</ul>",
                 "<textarea placeholder='New Note' rows='4' cols='60'></textarea>",
-                "<button class='btn btn-warning btn-note'></button>",
+                "<button class='btn btn-warning save'></button>",
                 "</div>"
             ].join("");
             bootbox.dialog({
