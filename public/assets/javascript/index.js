@@ -1,8 +1,25 @@
+$(document).on("click", ".btn-save", function() {
+  $(this).addClass("disabled");
+  var thisId = $(this).attr("data-id");
+  console.log(thisId);
+
+  $.ajax({
+    method: "PUT",
+    url: "/saved/" + thisId,
+   
+  })
+  
+  .done(function(data) {
+      console.log(data);
+  });
+});
+
+
 $(document).ready(function() {
   // Setting a reference to the article-container div where all the dynamic content will go
   // Adding event listeners to any dynamically generated "save article" and "scrape new article" buttons
   var articleContainer = $(".article-container");
-  $(document).on("click", ".btn.save", handleArticleSave);
+  $(document).on("click", ".btn-save", handleArticleSave);
   $(document).on("click", ".scrape-new", handleArticleScrape);
 
   // run initPage to start
@@ -27,32 +44,34 @@ $(document).ready(function() {
   function renderArticles(articles) {
     // function appends HTML (containing article data) to page
     // articles -> array of JSON containing available articles in DB
-    var articlePanels = [];
+    var articleCards = [];
     // pass article JSON object to createPanel function
     for (var i = 0; i < articles.length; i++) {
-      articlePanels.push(createPanel(articles[i]));
+      articleCards.push(createArticleDiv(articles[i]));
     }
     // append articlePanels array (all HTML for the articles) to the articlePanels container
-    articleContainer.append(articlePanels);
+    articleContainer.append(articleCards);
   }
 
-  function createPanel(article) {
+  function createArticleDiv(article) {
     // function takes in single JSON object for article/headline returns a bootstrap panel with article data inside
     var articleDiv = $(
       [
         "<div class='card'>",
-        "<div class='card-header'>",
+        "<div class='card-body'>",
+        "<div class='card-title'>",
         "<h6>",
         "<a href='" + article.url + "'>",
         article.headline,
         "</a>",
-        "<a class='btn btn-sm btn-success ml-auto save'>",
+        "<a class='btn btn-sm btn-warning btn-save'>",
         "Save Article",
         "</a>",
         "</h6>",
         "</div>",
-        "<div class='card-body'>","<p>",
+        "<div class='card-text'>","<p>",
         article.summary,"</p>",
+        "</div>",
         "</div>",
         "</div>"
       ].join("")
@@ -69,14 +88,14 @@ $(document).ready(function() {
     // Use joined array of HTML string data -> easier to read/change vs. concatenated string
     var emptyAlert = $(
       [
-        "<div class='alert alert-warning text-center'>",
+        "<div class='alert text-center'>",
         "<h4>Uh Oh. Looks like we don't have any new articles.</h4>",
         "</div>",
-        "<div class='panel panel-default'>",
-        "<div class='panel-heading text-center'>",
+        "<div class='card'>",
+        "<div class='card-header text-center'>",
         "<h3>What Would You Like To Do?</h3>",
         "</div>",
-        "<div class='panel-body text-center'>",
+        "<div class='card-body text-center'>",
         "<h4><a class='scrape-new'>Try Scraping New Articles</a></h4>",
         "<h4><a href='/saved'>Go to Saved Articles</a></h4>",
         "</div>",
@@ -90,7 +109,7 @@ $(document).ready(function() {
   function handleArticleSave() {
     // function triggered when user wants to save an article
     // retrieve the article that was rendered initially via the createPanel function
-    var articleToSave = $(this).parents(".card").data();
+    var articleToSave = $(".card").data();
     articleToSave.saved = true;
     // Using a put method (to be semantic) as this is an update to an existing record in collection
     $.ajax({

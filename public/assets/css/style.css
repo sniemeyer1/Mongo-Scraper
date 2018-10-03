@@ -1,5 +1,5 @@
 body {
-    background-color: grey;
+    background-color: #737070;
 } 
  
 a:link {
@@ -31,4 +31,13 @@ a:active {
 
 .btn-sm {
     float: right !important;
+}
+
+.card {
+    padding-bottom: -5px;
+    margin: 5px;
+}
+
+.jumbotron, .card {
+    background-color: #B5B1B1;
 }

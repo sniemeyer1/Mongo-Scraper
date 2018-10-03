@@ -1,16 +1,45 @@
+// $(document).on("click", ".btn-note", function() {
+  
+//     $(".modal-title").empty();
+//     $(".input").empty();
+  
+//     // Save the id from .btn-note
+//     var thisId = $(this).attr("data-id");
+  
+//     $.ajax({
+//       method: "GET",
+//       url: "/articles/" + thisId
+//     })
+//       // With that done, add the note information to the page
+//       .done(function(data) {
+//         console.log(data);
+  
+//         $(".modal-title").append("<h5>" + data.title + "</h5>");
+//         $(".input").append("<textarea id='bodyinput' name='body'></textarea>");
+//         $(".input").append("<button data-id='" + data._id + "' id='savenote' class='btn btn-primary btn-sm' style='margin-top:20px;'data-dismiss='modal'>Save Note</button>");
+  
+//         // If there's a note in the article
+//         if (data.note) {
+//           // Place the body of the note in the body textarea
+//           $("#bodyinput").val(data.note.body);
+//         }
+//       });
+//   });
+  
+
 $(document).ready(function(){
     var articleContainer = $(".article-container");
 
     $(document).on("click", ".btn.delete", handleArticleDelete);
-    $(document).on("click", ".btn.notes", handleArticleNotes);
-    $(document).on("click", ".btn.save", handleNoteSave);
+    $(document).on("click", ".btn-note", handleArticleNotes);
+    $(document).on("click", ".btn-save", handleNoteSave);
     $(document).on("click", ".btn.note-delete", handleNoteDelete);
 
     initPage();
 
     function initPage() {
         articleContainer.empty();
-        $.get("/api/headlines?saved=true").then(function(data){
+        $.getJSON("/api/headlines?saved=true").then(function(data){
             if (data && data.length) {
                 renderArticles(data);
             }
@@ -20,44 +49,47 @@ $(document).ready(function(){
         });
     }
     function renderArticles(articles) {
-        var articlePanels = [];
+        var articleCards = [];
 
         for (var i = 0; i < articles.length; i++){
-            articlePanels.push(createPanel(articles[i]));
+            articleCards.push(createArticleDiv(articles[i]));
         }
-        articleContainer.append(articlePanels);
+        articleContainer.append(articleCards);
     }
 
-    function createPanel(article){
-        var panel = 
+    function createArticleDiv(article){
+        var savedArticleDiv = 
             $([
-            "<div class='card article-container'>",
-            "<h5 class='card-header'>",
-            article.headline,
-            "<a class='btn btn-delete delete btn-warning ml-auto'>",
-            "Delete From Saved",
-            "</a>",
-            "</h5>",
-            "<div class='card-body'>",
-            "<p class='card-text'>",
-            article.summary,
-            "</p>",
-            "</div>",
-            "<div>","<p>",article.date,"</p>","</div>"
-            "</div>"
+                "<div class='card'>",
+                "<div class='card-body'>",
+                "<div class='card-title'>",
+                "<h6>",
+                "<a href='" + article.url + "'>",
+                article.headline,
+                "</a>",
+                "<a class='btn btn-sm btn-warning btn-note'>",
+                "Add Note",
+                "</a>",
+                "</h6>",
+                "</div>",
+                "<div class='card-text'>","<p>",
+                article.summary,"</p>",
+                "</div>",
+                "</div>",
+                "</div>"
         ].join(""));
-    panel.data("_id", article._id);
-    return panel;
+    savedArticleDiv.data("_id", article._id);
+    return savedArticleDiv;
     }
     function renderEmpty(){
         var emptyAlert =
             $([
-                "<div class='alert alert-warning text-center'>",
+                "<div class='alert text-center'>",
                 "<h5='UH OH'></h5>",
                 "<div class='card-body'>",
                 "<h3>No saved articles. Would you like to browse articles?</h3>",
-                "<h4><a class='scrape-new'></a></h4>",
-                "<h4><a href='/'></a>Browse Articles</h4>",
+                "<h4><a class='btn-sm btn-warning scrape-new'></a></h4>",
+                "<h4><a href='/'>Browse Articles</a></h4>",
                 "</div>",
                 "</div>"
             ].join(""));
@@ -90,7 +122,7 @@ $(document).ready(function(){
     }
 
     function handleArticleDelete() {
-        var articleToDelete = $(this).parents(".panel").data();
+        var articleToDelete = $(this).parents(".card").data();
         articleToSave.saved = true;
 
         $.ajax({
@@ -102,13 +134,14 @@ $(document).ready(function(){
                 initPage();
             }
         });
+        
     }
     
     function handleArticleNotes() {
-        var currentArticle = $(this).parents(".panel").data();
+        var currentArticle = $(".card").data();
         $.get("/api/notes/" + currentArticle._id).then(function(data){
             var modalText = [
-                "<div class='container-fluid text-center'>",
+                "<div class='container-fluid'>",
                 "<h3>Article Notes: ",
                 currentArticle._id,
                 "</h3>",
@@ -116,7 +149,7 @@ $(document).ready(function(){
                 "<ul class='list-group note-container'>",
                 "</ul>",
                 "<textarea placeholder='New Note' rows='4' cols='60'></textarea>",
-                "<button class='btn btn-warning save'></button>",
+                "<button class='btn btn-warning btn-note'></button>",
                 "</div>"
             ].join("");
             bootbox.dialog({
@@ -127,7 +160,7 @@ $(document).ready(function(){
                 _id: currentArticle._id,
                 notes: data || []
             };
-            $(".btn.save").data("article", noteData);
+            $(".btn-save").data("article", noteData);
             renderNotesList(noteData);
         })  
     }
