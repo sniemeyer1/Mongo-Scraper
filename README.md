@@ -2,4 +2,6 @@
 
 ## Created a web app that scrapes news articles from Vice News using Mongoose and Cheerio.
 
-###Will update when completed!
+https://desolate-taiga-17394.herokuapp.com/
+
+Will update when completed!
