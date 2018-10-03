@@ -135,7 +135,7 @@ $(document).ready(function(){
             }
         });
         
-    }
+    }ßç
     
     function handleArticleNotes() {
         var currentArticle = $(".card").data();
