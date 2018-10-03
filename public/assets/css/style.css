@@ -1,0 +1,34 @@
+body {
+    background-color: grey;
+} 
+ 
+a:link {
+    color: black;
+}
+
+/* visited link */
+a:visited {
+    color: black;
+}
+
+/* mouse over link */
+a:hover {
+    color: black;
+}
+
+/* selected link */
+a:active {
+    color: black;
+}
+
+.btn {
+    margin-right: 5px;
+}
+
+.btn-home {
+    margin-left: -15px;
+}
+
+.btn-sm {
+    float: right !important;
+}

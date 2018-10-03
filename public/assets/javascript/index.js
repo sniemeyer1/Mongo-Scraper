@@ -38,30 +38,30 @@ $(document).ready(function() {
 
   function createPanel(article) {
     // function takes in single JSON object for article/headline returns a bootstrap panel with article data inside
-    var panel = $(
+    var articleDiv = $(
       [
-        "<div class='panel panel-default'>",
-        "<div class='panel-heading'>",
-        "<h3>",
-        "<a class='article-link' target='_blank' href='" + article.url + "'>",
+        "<div class='card'>",
+        "<div class='card-header'>",
+        "<h6>",
+        "<a href='" + article.url + "'>",
         article.headline,
         "</a>",
-        "<a class='btn btn-success save'>",
+        "<a class='btn btn-sm btn-success ml-auto save'>",
         "Save Article",
         "</a>",
-        "</h3>",
+        "</h6>",
         "</div>",
-        "<div class='panel-body'>",
-        article.summary,
+        "<div class='card-body'>","<p>",
+        article.summary,"</p>",
         "</div>",
         "</div>"
       ].join("")
     );
     // constructs jQuery element containing all of the formatted HTML for the article panel
     // attach the article id to the jQuery element to use to figure out which article user wants to save
-    panel.data("_id", article._id);
+    articleDiv.data("_id", article._id);
     // return constructed panel jQuery element
-    return panel;
+    return articleDiv;
   }
 
   function renderEmpty() {
@@ -90,7 +90,7 @@ $(document).ready(function() {
   function handleArticleSave() {
     // function triggered when user wants to save an article
     // retrieve the article that was rendered initially via the createPanel function
-    var articleToSave = $(this).parents(".panel").data();
+    var articleToSave = $(this).parents(".card").data();
     articleToSave.saved = true;
     // Using a put method (to be semantic) as this is an update to an existing record in collection
     $.ajax({

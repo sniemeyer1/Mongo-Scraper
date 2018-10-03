@@ -9,7 +9,7 @@ request('https://vice.com/en_us/topic/news', (error, response, html) => {
     if (!error && response.statusCode == 200) {
       const $ = cheerio.load(html);
       //empty array
-      var article = [];
+      var article = [{}];
       
       $('.grid__wrapper__card').each((i, el) => {
           //grab text and cut off white space
